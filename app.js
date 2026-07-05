@@ -66,13 +66,39 @@
     setFormBusy(true);
 
     const requestId = ++activeRequestId;
-    const loading = window.CosmicLoading.start();
+    let loading = null;
 
     try {
       const saju = window.SajuCalculator.calculateSaju(birthData);
+      const cacheKey = window.AppStorage.createFortuneCacheKey(birthData, saju);
+      const cachedAnalysis = window.AppStorage.getFortuneCache(cacheKey);
+
+      if (cachedAnalysis) {
+        if (isStaleRequest(requestId)) return;
+
+        currentSession = {
+          id: cachedAnalysis.sessionId || window.SajuUtils.createId("session"),
+          birthData,
+          saju,
+          analysis: cachedAnalysis,
+          chat: [],
+        };
+
+        window.AppStorage.saveRecentReading(currentSession);
+        window.AppUI.renderRecent(getBetaRecentReadings(), restoreSession);
+        window.AppUI.renderResult(currentSession);
+        window.AppUI.showToast("저장된 분석 결과를 불러왔습니다.");
+        return;
+      }
+
+      loading = window.CosmicLoading.start();
+
       const analysis = await window.GeminiService.requestFortune({
         birthData,
         saju,
+        onRetry: ({ message: retryMessage }) => {
+          loading?.setMessage?.(retryMessage);
+        },
       });
 
       if (isStaleRequest(requestId)) return;
@@ -86,6 +112,7 @@
       };
 
       window.AppStorage.saveRecentReading(currentSession);
+      window.AppStorage.saveFortuneCache(cacheKey, analysis);
       window.AppUI.renderRecent(getBetaRecentReadings(), restoreSession);
       await loading.finish();
 
@@ -95,7 +122,9 @@
     } catch (error) {
       if (isStaleRequest(requestId)) return;
 
-      await loading.fail(error.message);
+      if (loading) {
+        await loading.fail(error.message);
+      }
       window.AppUI.showToast(
         error.message || "현재 AI 분석 서버 연결에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
       );

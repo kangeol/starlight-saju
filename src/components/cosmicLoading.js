@@ -23,6 +23,7 @@
   let canvas = null;
   let startedAt = 0;
   let active = false;
+  let manualStatus = "";
 
   function start() {
     const overlay = document.querySelector("#cosmicLoading");
@@ -38,6 +39,7 @@
 
     startedAt = performance.now();
     active = true;
+    manualStatus = "";
     overlay.classList.remove("hidden", "cosmic-loading--closing", "cosmic-loading--failed");
     overlay.setAttribute("aria-hidden", "false");
     overlay.classList.toggle("cosmic-loading--mobile-lite", isMobilePerformanceMode());
@@ -51,6 +53,7 @@
     return {
       finish,
       fail,
+      setMessage,
     };
   }
 
@@ -75,6 +78,7 @@
   function stop() {
     const overlay = document.querySelector("#cosmicLoading");
     active = false;
+    manualStatus = "";
     cancelAnimationFrame(animationFrame);
     animationFrame = 0;
     window.removeEventListener("resize", resizeCanvas);
@@ -208,7 +212,7 @@
 
     const elapsed = performance.now() - startedAt;
     const current = steps.reduce((selected, step) => (elapsed >= step.at ? step : selected), steps[0]);
-    setStatus(current.text);
+    setStatus(manualStatus || current.text);
 
     const longWait = document.querySelector("#cosmicLongWait");
     if (longWait) longWait.classList.toggle("hidden", elapsed < longWaitMs);
@@ -219,6 +223,13 @@
   function setStatus(text) {
     const status = document.querySelector("#cosmicLoadingText");
     if (status) status.textContent = text;
+  }
+
+  function setMessage(text) {
+    manualStatus = String(text || "").trim();
+    if (manualStatus) {
+      setStatus(manualStatus);
+    }
   }
 
   function wait(ms) {
@@ -232,5 +243,6 @@
   window.CosmicLoading = {
     start,
     stop,
+    setMessage,
   };
 })();

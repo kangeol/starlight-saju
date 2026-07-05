@@ -7,10 +7,13 @@
   const prefix = config.STORAGE_PREFIX;
 
   const KEYS = {
+    fortuneCache: `${prefix}:fortuneCache`,
     recent: `${prefix}:recentReadings`,
     session: `${prefix}:currentSession`,
     theme: `${prefix}:theme`,
   };
+  const FORTUNE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+  const FORTUNE_CACHE_LIMIT = 20;
 
   function read(key, fallback) {
     try {
@@ -46,6 +49,64 @@
     write(KEYS.session, compact);
   }
 
+  function createFortuneCacheKey(birthData, saju) {
+    return window.SajuUtils.simpleHash({
+      gender: birthData.gender,
+      calendarType: birthData.calendarType,
+      birthDate: birthData.birthDate,
+      birthTime: birthData.hourUnknown ? "UNKNOWN" : birthData.birthTime,
+      hourUnknown: Boolean(birthData.hourUnknown),
+      yearPillar: saju.yearPillar,
+      monthPillar: saju.monthPillar,
+      dayPillar: saju.dayPillar,
+      hourPillar: saju.hourUnknown ? "UNKNOWN" : saju.hourPillar,
+      fiveElements: saju.fiveElements,
+    });
+  }
+
+  function getFortuneCache(cacheKey) {
+    const cache = read(KEYS.fortuneCache, {});
+    const entry = cache[cacheKey];
+
+    if (!entry || !entry.analysis || Number(entry.expiresAt || 0) < Date.now()) {
+      if (entry) {
+        delete cache[cacheKey];
+        write(KEYS.fortuneCache, cache);
+      }
+
+      return null;
+    }
+
+    return {
+      ...entry.analysis,
+      meta: {
+        ...(entry.analysis.meta || {}),
+        cached: "local",
+        apiCalls: 0,
+      },
+    };
+  }
+
+  function saveFortuneCache(cacheKey, analysis) {
+    const cache = read(KEYS.fortuneCache, {});
+    const now = Date.now();
+
+    cache[cacheKey] = {
+      savedAt: new Date(now).toISOString(),
+      expiresAt: now + FORTUNE_CACHE_TTL_MS,
+      analysis,
+    };
+
+    const compact = Object.fromEntries(
+      Object.entries(cache)
+        .filter(([, entry]) => Number(entry.expiresAt || 0) >= now)
+        .sort((left, right) => String(right[1].savedAt).localeCompare(String(left[1].savedAt)))
+        .slice(0, FORTUNE_CACHE_LIMIT),
+    );
+
+    write(KEYS.fortuneCache, compact);
+  }
+
   function updateSession(session) {
     write(KEYS.session, session);
     saveRecentReading(session);
@@ -78,10 +139,13 @@
   window.AppStorage = {
     clearCurrentSession,
     clearRecentReadings,
+    createFortuneCacheKey,
+    getFortuneCache,
     getCurrentSession,
     getRecentReadings,
     getTheme,
     saveRecentReading,
+    saveFortuneCache,
     setTheme,
     updateSession,
   };
