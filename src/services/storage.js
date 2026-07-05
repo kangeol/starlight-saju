@@ -7,7 +7,7 @@
   const prefix = config.STORAGE_PREFIX;
 
   const KEYS = {
-    fortuneCache: `${prefix}:fortuneCache:v65`,
+    fortuneCache: `${prefix}:fortuneCache:v7`,
     recent: `${prefix}:recentReadings`,
     session: `${prefix}:currentSession`,
     theme: `${prefix}:theme`,
@@ -93,7 +93,7 @@
 
     cache[cacheKey] = {
       savedAt: new Date(now).toISOString(),
-      expiresAt: now + FORTUNE_CACHE_TTL_MS,
+      expiresAt: now + (analysis?.meta?.defaultResult ? 15 * 60 * 1000 : FORTUNE_CACHE_TTL_MS),
       analysis,
     };
 
