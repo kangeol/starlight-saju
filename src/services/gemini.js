@@ -80,6 +80,7 @@
     const config = getConfig();
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), config.API_TIMEOUT_MS);
+    const payload = JSON.stringify(body);
 
     try {
       const response = await fetch(config.APPS_SCRIPT_URL, {
@@ -88,9 +89,9 @@
         credentials: "omit",
         redirect: "follow",
         // Apps Script Web App은 OPTIONS preflight를 안정적으로 처리하지 못할 수 있습니다.
-        // Content-Type 헤더를 직접 넣지 않고 문자열 body만 보내면 브라우저가 CORS-safelisted
-        // text/plain 요청으로 처리하므로 GitHub Pages에서 불필요한 preflight를 피할 수 있습니다.
-        body: JSON.stringify(body),
+        // application/json 헤더를 직접 넣지 않고 text/plain simple request로 전송합니다.
+        // Apps Script doPost에서는 JSON.parse(e.postData.contents)로 이 문자열을 파싱합니다.
+        body: payload,
         signal: controller.signal,
       });
 

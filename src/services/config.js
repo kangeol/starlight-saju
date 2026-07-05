@@ -5,9 +5,11 @@
  */
 (function () {
   const ADMIN_STORAGE_KEY = "aiSajuAdminSettings";
+  const CURRENT_APPS_SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbyw8JjQvx52yVewY3jMDSKXTWaq-_omu4-AgwvfRwP18e7Y-JnUXDqazxMK5Be7qpUg/exec";
 
   const defaultConfig = {
-    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwXEtB_cU0e9sz-ewcWJsE4FDb7DQs2Sw5IGTWoJEKNXwOCWGG5j2DKjT9Y1ikANh2DwQ/exec",
+    APPS_SCRIPT_URL: CURRENT_APPS_SCRIPT_URL,
     USE_MOCK_WHEN_API_EMPTY: false,
     API_TIMEOUT_MS: 30000,
     STORAGE_PREFIX: "aiSajuV4",
@@ -25,11 +27,31 @@
 
   function readAdminSettings() {
     try {
-      return JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || {};
+      const settings = JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || {};
+      return normalizeAdminSettings(settings);
     } catch (error) {
       console.warn("관리자 설정을 읽지 못했습니다.", error);
       return {};
     }
+  }
+
+  function normalizeAdminSettings(settings) {
+    if (!settings || typeof settings !== "object") return {};
+
+    const storedUrl = String(settings.appsScriptUrl || "").trim();
+    const isAppsScriptUrl = /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(storedUrl);
+
+    if (!storedUrl || (isAppsScriptUrl && storedUrl !== CURRENT_APPS_SCRIPT_URL)) {
+      const migrated = {
+        ...settings,
+        appsScriptUrl: CURRENT_APPS_SCRIPT_URL,
+      };
+
+      localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+
+    return settings;
   }
 
   function getRuntimeConfig() {
@@ -52,6 +74,7 @@
   window.AppConfig = {
     ...defaultConfig,
     ADMIN_STORAGE_KEY,
+    CURRENT_APPS_SCRIPT_URL,
     getRuntimeConfig,
   };
 })();

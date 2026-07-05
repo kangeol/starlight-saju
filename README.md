@@ -90,8 +90,13 @@ GEMINI_API_KEY=본인의 Gemini API 키
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-4. 웹 앱으로 배포합니다.
-5. `src/services/config.js`의 `APPS_SCRIPT_URL`에 배포 URL을 넣습니다.
+4. `Code.gs` 파일 전체 내용을 Apps Script 편집기의 `Code.gs` 최상위에 붙여넣습니다.
+   `function myFunction() { ... }` 안에 넣으면 Web App이 `doGet/doPost`를 찾지 못합니다.
+5. 웹 앱으로 새 버전을 배포합니다.
+   - 실행 사용자: 나
+   - 액세스 권한: 모든 사용자
+6. `/exec` 주소에 접속했을 때 JSON이 출력되는지 확인합니다.
+7. `src/services/config.js`의 `APPS_SCRIPT_URL`에 배포 URL을 넣습니다.
 
 ```js
 APPS_SCRIPT_URL: "https://script.google.com/macros/s/배포_ID/exec"

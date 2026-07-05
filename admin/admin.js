@@ -5,6 +5,7 @@
 (function () {
   const PASSWORD = "admin1234";
   const storageKey = window.AppConfig.ADMIN_STORAGE_KEY;
+  const defaultAppsScriptUrl = window.AppConfig.APPS_SCRIPT_URL;
 
   const loginPanel = document.querySelector("#loginPanel");
   const settingsPanel = document.querySelector("#settingsPanel");
@@ -29,7 +30,9 @@
     event.preventDefault();
 
     const settings = {
-      appsScriptUrl: document.querySelector("#appsScriptUrl").value.trim(),
+      appsScriptUrl: normalizeAppsScriptUrl(
+        document.querySelector("#appsScriptUrl").value.trim(),
+      ),
       geminiModel: document.querySelector("#geminiModel").value,
       notice: document.querySelector("#notice").value.trim(),
       promptMemo: document.querySelector("#promptMemo").value.trim(),
@@ -46,10 +49,32 @@
       "설정을 저장했습니다. 사이트 화면을 새로고침하면 반영됩니다.";
   });
 
+  function normalizeAppsScriptUrl(url) {
+    const trimmedUrl = String(url || "").trim();
+    const isAppsScriptUrl = /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(trimmedUrl);
+
+    if (!trimmedUrl || (isAppsScriptUrl && trimmedUrl !== defaultAppsScriptUrl)) {
+      return defaultAppsScriptUrl;
+    }
+
+    return trimmedUrl;
+  }
+
   function loadSettings() {
     const settings = JSON.parse(localStorage.getItem(storageKey) || "{}");
+    const normalizedAppsScriptUrl = normalizeAppsScriptUrl(settings.appsScriptUrl || "");
 
-    document.querySelector("#appsScriptUrl").value = settings.appsScriptUrl || "";
+    if (settings.appsScriptUrl && settings.appsScriptUrl !== normalizedAppsScriptUrl) {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({
+          ...settings,
+          appsScriptUrl: normalizedAppsScriptUrl,
+        }),
+      );
+    }
+
+    document.querySelector("#appsScriptUrl").value = normalizedAppsScriptUrl;
     document.querySelector("#geminiModel").value =
       settings.geminiModel || window.AppConfig.DEFAULT_MODEL;
     document.querySelector("#notice").value = settings.notice || "";
