@@ -106,8 +106,8 @@
         throw new Error(API_ERROR_MESSAGE);
       }
 
-      if (data.error) {
-        throw new Error(API_ERROR_MESSAGE);
+      if (data.error || data.ok === false) {
+        throw new Error(data.userMessage || data.message || API_ERROR_MESSAGE);
       }
 
       return data;
@@ -137,6 +137,10 @@
         relationship: clampScore(scores.relationship),
       },
       summary: data.summary,
+      analysisBasis: data.analysisBasis || null,
+      coreInsight: Array.isArray(data.coreInsight) ? data.coreInsight : [],
+      goodActions: Array.isArray(data.goodActions) ? data.goodActions : [],
+      avoidActions: Array.isArray(data.avoidActions) ? data.avoidActions : [],
       sections: data.sections,
       luckyItems: Array.isArray(data.luckyItems) ? data.luckyItems : [],
       meta: {
@@ -152,6 +156,7 @@
     if (!Number.isFinite(Number(data.totalScore))) throw new Error(API_ERROR_MESSAGE);
     if (!data.summary || typeof data.summary !== "string") throw new Error(API_ERROR_MESSAGE);
     if (!data.scores || typeof data.scores !== "object") throw new Error(API_ERROR_MESSAGE);
+    if (!data.analysisBasis || typeof data.analysisBasis !== "object") throw new Error(API_ERROR_MESSAGE);
     if (!data.sections || typeof data.sections !== "object") throw new Error(API_ERROR_MESSAGE);
 
     REQUIRED_SCORE_KEYS.forEach((key) => {
