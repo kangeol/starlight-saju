@@ -188,15 +188,15 @@
                       <small>월</small>
                       <select id="birthMonth" name="birthMonth" autocomplete="bday-month" required>
                         <option value="">월</option>
-                        <option value="1">01</option>
-                        <option value="2">02</option>
-                        <option value="3">03</option>
-                        <option value="4">04</option>
-                        <option value="5">05</option>
-                        <option value="6">06</option>
-                        <option value="7">07</option>
-                        <option value="8">08</option>
-                        <option value="9">09</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
                         <option value="10">10</option>
                         <option value="11">11</option>
                         <option value="12">12</option>
@@ -215,8 +215,8 @@
                 <label class="field field--wide">
                   <span>태어난 시간</span>
                   <div class="birth-time-inputs">
-                    <select id="birthTimePreset" name="birthTimePreset" aria-label="태어난 시간 선택">
-                      <option value="unknown" selected>시간 모름</option>
+                    <select id="birthTime" name="birthTime" aria-label="태어난 시간 선택" required>
+                      <option value="UNKNOWN" selected>시간 모름</option>
                       <option value="00:30">00:30</option>
                       <option value="01:30">01:30</option>
                       <option value="02:30">02:30</option>
@@ -234,6 +234,7 @@
                       <option value="14:30">14:30</option>
                       <option value="15:30">15:30</option>
                       <option value="16:30">16:30</option>
+                      <option value="16:46">16:46</option>
                       <option value="17:30">17:30</option>
                       <option value="18:30">18:30</option>
                       <option value="19:30">19:30</option>
@@ -242,8 +243,8 @@
                       <option value="22:30">22:30</option>
                       <option value="23:30">23:30</option>
                     </select>
-                    <input id="birthTime" name="birthTime" type="time" aria-label="태어난 시간 직접 입력" disabled />
                   </div>
+                  <p class="field-hint">태어난 시간을 모르는 경우에도 기본 사주 분석이 가능합니다. 시간을 입력하면 더 정밀한 상담이 가능합니다.</p>
                 </label>
               </div>
 
@@ -466,6 +467,7 @@
     <script src="src/components/chart.js"></script>
     <script src="src/components/cosmicLoading.js"></script>
     <script src="src/components/resultReveal.js"></script>
+    <script src="src/components/birthInput.js"></script>
     <script src="src/services/gemini.js"></script>
     <script src="src/services/ui.js"></script>
     <script src="app.js"></script>

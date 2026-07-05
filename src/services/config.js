@@ -7,7 +7,7 @@
   const ADMIN_STORAGE_KEY = "aiSajuAdminSettings";
 
   const defaultConfig = {
-    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyw8JjQvx52yVewY3jMDSKXTWaq-_omu4-AgwvfRwP18e7Y-JnUXDqazxMK5Be7qpUg/exec"
+    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwXEtB_cU0e9sz-ewcWJsE4FDb7DQs2Sw5IGTWoJEKNXwOCWGG5j2DKjT9Y1ikANh2DwQ/exec",
     USE_MOCK_WHEN_API_EMPTY: false,
     API_TIMEOUT_MS: 30000,
     STORAGE_PREFIX: "aiSajuV4",

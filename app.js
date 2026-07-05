@@ -14,7 +14,7 @@
     window.AppUI.applyTheme(window.AppStorage.getTheme());
     window.AppUI.showNotice(config.notice);
     window.AppUI.applyFeatureFlags(config);
-    setupBirthDateInputs();
+    window.BirthInput.init();
     bindEvents();
     renderInitialState();
   }
@@ -29,11 +29,6 @@
     }
 
     bindOptional("#fortuneForm", "submit", handleSubmit);
-    bindOptional("#birthYear", "input", syncBirthDateFields);
-    bindOptional("#birthMonth", "change", syncBirthDateFields);
-    bindOptional("#birthDay", "change", syncBirthDateFields);
-    bindOptional("#birthTimePreset", "change", syncBirthTimeFields);
-    bindOptional("#birthTime", "input", syncBirthTimePreset);
     bindOptional("#pdfButton", "click", () => window.print());
     bindOptional("#copyLinkButton", "click", copyCurrentLink);
     bindOptional("#shareKakao", "click", shareKakao);
@@ -114,39 +109,26 @@
   function getFormData() {
     const selectedGender = document.querySelector("input[name='gender']:checked");
     const selectedCalendar = document.querySelector("input[name='calendarType']:checked");
-    const birthDateParts = getBirthDateParts();
-    const birthDate = createBirthDate(birthDateParts);
-    const hiddenBirthDate = window.AppUI.qs("#birthDate");
-    const birthTimeData = getBirthTimeData();
-
-    if (hiddenBirthDate) {
-      hiddenBirthDate.value = birthDate;
-    }
+    const birthInput = window.BirthInput.getValue();
 
     return {
       name: window.AppUI.qs("#name").value.trim(),
       gender: selectedGender ? selectedGender.value : "",
       calendarType: selectedCalendar ? selectedCalendar.value : "",
-      birthYear: birthDateParts.yearText,
-      birthMonth: birthDateParts.monthText,
-      birthDay: birthDateParts.dayText,
-      birthDate,
-      birthTime: birthTimeData.birthTime,
-      birthTimeLabel: birthTimeData.birthTimeLabel,
-      hourUnknown: birthTimeData.hourUnknown,
+      ...birthInput,
     };
   }
 
   function validateInput(input) {
     if (!input.birthYear || !input.birthMonth || !input.birthDay) {
-      return "정확한 사주풀이를 위해 생년월일과 태어난 시간을 모두 입력해주세요.";
+      return "정확한 사주풀이를 위해 생년월일을 입력해주세요.";
     }
 
     if (!input.gender) return "성별을 선택해 주세요.";
     if (!input.calendarType) return "양력 또는 음력을 선택해 주세요.";
-    if (!isValidBirthDate(input)) return "생년월일을 정확히 입력해주세요.";
+    if (!window.BirthInput.isValidDate(input)) return "생년월일을 정확히 입력해주세요.";
     if (!input.hourUnknown && !input.birthTime) {
-      return "정확한 사주풀이를 위해 생년월일과 태어난 시간을 모두 입력해주세요.";
+      return "태어난 시간을 선택해주세요.";
     }
 
     const dateParts = window.SajuUtils.parseDate(input.birthDate);
@@ -160,141 +142,6 @@
   function bindOptional(selector, eventName, handler) {
     const element = window.AppUI.qs(selector);
     if (element) element.addEventListener(eventName, handler);
-  }
-
-  function setupBirthDateInputs() {
-    const yearInput = window.AppUI.qs("#birthYear");
-    const daySelect = window.AppUI.qs("#birthDay");
-    const currentYear = new Date().getFullYear();
-
-    if (yearInput) {
-      yearInput.max = String(currentYear);
-    }
-
-    if (daySelect && daySelect.options.length <= 1) {
-      updateBirthDayOptions();
-    }
-
-    syncBirthDateFields();
-    syncBirthTimeFields();
-  }
-
-  function syncBirthDateFields() {
-    updateBirthDayOptions();
-
-    const hiddenBirthDate = window.AppUI.qs("#birthDate");
-    if (hiddenBirthDate) {
-      hiddenBirthDate.value = createBirthDate(getBirthDateParts());
-    }
-  }
-
-  function syncBirthTimeFields() {
-    const preset = window.AppUI.qs("#birthTimePreset");
-    const timeInput = window.AppUI.qs("#birthTime");
-    if (!preset || !timeInput) return;
-
-    if (preset.value === "unknown") {
-      timeInput.value = "";
-      timeInput.disabled = true;
-      timeInput.removeAttribute("required");
-      return;
-    }
-
-    timeInput.disabled = false;
-    timeInput.required = true;
-
-    if (preset.value) {
-      timeInput.value = preset.value;
-    }
-  }
-
-  function syncBirthTimePreset() {
-    const preset = window.AppUI.qs("#birthTimePreset");
-    const timeInput = window.AppUI.qs("#birthTime");
-    if (!preset || !timeInput || !timeInput.value) return;
-
-    const hasPreset = Array.from(preset.options).some((option) => option.value === timeInput.value);
-    preset.value = hasPreset ? timeInput.value : "";
-  }
-
-  function updateBirthDayOptions() {
-    const daySelect = window.AppUI.qs("#birthDay");
-    if (!daySelect) return;
-
-    const selectedDay = daySelect.value;
-    const { year, month } = getBirthDateParts();
-    const maxDay = getDaysInMonth(year, month) || 31;
-
-    daySelect.innerHTML = '<option value="">일</option>';
-
-    for (let day = 1; day <= maxDay; day += 1) {
-      const option = document.createElement("option");
-      option.value = String(day);
-      option.textContent = String(day).padStart(2, "0");
-      daySelect.append(option);
-    }
-
-    if (selectedDay && Number(selectedDay) <= maxDay) {
-      daySelect.value = selectedDay;
-    }
-  }
-
-  function getBirthDateParts() {
-    const yearText = window.AppUI.qs("#birthYear")?.value.trim() || "";
-    const monthText = window.AppUI.qs("#birthMonth")?.value || "";
-    const dayText = window.AppUI.qs("#birthDay")?.value || "";
-
-    return {
-      yearText,
-      monthText,
-      dayText,
-      year: Number(yearText),
-      month: Number(monthText),
-      day: Number(dayText),
-    };
-  }
-
-  function createBirthDate(parts) {
-    if (!parts.yearText || !parts.monthText || !parts.dayText) return "";
-
-    return [
-      String(parts.year).padStart(4, "0"),
-      String(parts.month).padStart(2, "0"),
-      String(parts.day).padStart(2, "0"),
-    ].join("-");
-  }
-
-  function getBirthTimeData() {
-    const preset = window.AppUI.qs("#birthTimePreset")?.value || "unknown";
-    const exactTime = window.AppUI.qs("#birthTime")?.value || "";
-    const hourUnknown = preset === "unknown";
-    const birthTime = hourUnknown ? "unknown" : exactTime || preset;
-
-    return {
-      birthTime,
-      birthTimeLabel: hourUnknown ? "시간 모름" : birthTime,
-      hourUnknown,
-    };
-  }
-
-  function isValidBirthDate(input) {
-    const year = Number(input.birthYear);
-    const month = Number(input.birthMonth);
-    const day = Number(input.birthDay);
-    const currentYear = new Date().getFullYear();
-
-    if (!Number.isInteger(year) || year < 1900 || year > currentYear) return false;
-    if (!Number.isInteger(month) || month < 1 || month > 12) return false;
-    if (!Number.isInteger(day) || day < 1 || day > getDaysInMonth(year, month)) return false;
-
-    const dateParts = window.SajuUtils.parseDate(input.birthDate);
-    return Boolean(dateParts) && dateParts.year === year && dateParts.month === month && dateParts.day === day;
-  }
-
-  function getDaysInMonth(year, month) {
-    if (!Number.isInteger(month) || month < 1 || month > 12) return 0;
-    if (!Number.isInteger(year) || year < 1) return new Date(2024, month, 0).getDate();
-    return new Date(year, month, 0).getDate();
   }
 
   function handleInvalidInput(message) {
@@ -325,8 +172,7 @@
       form.removeAttribute("aria-busy");
     }
 
-    setupBirthDateInputs();
-    syncBirthTimeFields();
+    window.BirthInput.reset();
 
     window.CosmicLoading.stop();
     window.AppStorage.clearCurrentSession();

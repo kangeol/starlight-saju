@@ -4444,13 +4444,18 @@ select:focus {
 
 .birth-time-inputs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
-.birth-time-inputs input:disabled {
-  cursor: not-allowed;
-  opacity: 0.54;
+.birth-time-inputs select {
+  width: 100%;
+}
+
+.field-hint {
+  margin: 8px 0 0;
+  color: rgba(235, 226, 205, 0.62);
+  font-size: 0.78rem;
+  line-height: 1.55;
 }
 
 .time-unknown-notice {

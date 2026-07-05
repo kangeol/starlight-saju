@@ -84,9 +84,12 @@
     try {
       const response = await fetch(config.APPS_SCRIPT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-        },
+        mode: "cors",
+        credentials: "omit",
+        redirect: "follow",
+        // Apps Script Web App은 OPTIONS preflight를 안정적으로 처리하지 못할 수 있습니다.
+        // Content-Type 헤더를 직접 넣지 않고 문자열 body만 보내면 브라우저가 CORS-safelisted
+        // text/plain 요청으로 처리하므로 GitHub Pages에서 불필요한 preflight를 피할 수 있습니다.
         body: JSON.stringify(body),
         signal: controller.signal,
       });
@@ -95,7 +98,12 @@
         throw new Error(API_ERROR_MESSAGE);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (error) {
+        throw new Error(API_ERROR_MESSAGE);
+      }
 
       if (data.error) {
         throw new Error(API_ERROR_MESSAGE);

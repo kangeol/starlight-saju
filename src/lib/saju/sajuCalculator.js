@@ -10,7 +10,7 @@
     const yearPillar = window.SajuGanji.getYearPillar(dateParts);
     const monthPillar = window.SajuGanji.getMonthPillar(dateParts, yearPillar);
     const dayPillar = window.SajuGanji.getDayPillar(dateParts);
-    const hourUnknown = input.hourUnknown || input.birthTime === "unknown";
+    const hourUnknown = input.hourUnknown || input.birthTime === "UNKNOWN" || input.birthTime === "unknown";
     const hourPillar = hourUnknown
       ? {
           stem: "UNKNOWN",
