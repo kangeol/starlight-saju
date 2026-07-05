@@ -1,0 +1,12 @@
+{
+  "name": "ai-saju-webapp",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Mobile-first AI saju counseling platform for GitHub Pages",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

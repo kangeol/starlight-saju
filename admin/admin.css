@@ -1,0 +1,52 @@
+.admin-shell {
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: 22px 14px 42px;
+}
+
+.admin-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-panel h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.admin-copy,
+.admin-message {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+textarea {
+  width: 100%;
+  min-height: 132px;
+  resize: vertical;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  outline: none;
+  background: color-mix(in srgb, var(--bg-elevated) 76%, transparent);
+  color: var(--text);
+  padding: 12px 14px;
+  font: inherit;
+  line-height: 1.6;
+}
+
+textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(215, 180, 106, 0.16);
+}
+
+.secondary-link {
+  display: grid;
+  min-height: 48px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--gold-strong);
+  text-decoration: none;
+  font-weight: 900;
+}

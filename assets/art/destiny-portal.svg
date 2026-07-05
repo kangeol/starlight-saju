@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <radialGradient id="gateCore" cx="50%" cy="50%" r="46%">
+      <stop offset="0" stop-color="#fff0c4" stop-opacity=".86"/>
+      <stop offset=".12" stop-color="#c99752" stop-opacity=".46"/>
+      <stop offset=".38" stop-color="#6d4ee8" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#030611" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rimGold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f6d797" stop-opacity=".82"/>
+      <stop offset=".5" stop-color="#a77b3e" stop-opacity=".52"/>
+      <stop offset="1" stop-color="#49301a" stop-opacity=".34"/>
+    </linearGradient>
+    <filter id="portalGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1000" height="1000" fill="none"/>
+  <circle cx="500" cy="500" r="330" fill="url(#gateCore)"/>
+  <g fill="none" stroke="url(#rimGold)" stroke-linecap="round">
+    <circle cx="500" cy="500" r="442" stroke-width="1.6" opacity=".88"/>
+    <circle cx="500" cy="500" r="396" stroke-width="1" opacity=".64"/>
+    <circle cx="500" cy="500" r="318" stroke-width="1.2" opacity=".56"/>
+    <circle cx="500" cy="500" r="228" stroke-width="1.1" opacity=".44"/>
+    <circle cx="500" cy="500" r="132" stroke-width="1.2" opacity=".5"/>
+    <path d="M500 58v884M58 500h884M187 187l626 626M813 187 187 813" stroke-width=".95" opacity=".52"/>
+    <path d="M500 102 621 500 500 898 379 500Z" stroke-width="1.2" opacity=".62"/>
+    <path d="M102 500 500 379 898 500 500 621Z" stroke-width="1" opacity=".46"/>
+  </g>
+  <g stroke="#e2b46b" stroke-linecap="round" opacity=".75">
+    <path d="M500 58v42M500 900v42M58 500h42M900 500h42" stroke-width="1.4"/>
+    <path d="M621 75l-12 42M379 925l12-42M925 621l-42-12M75 379l42 12" stroke-width="1"/>
+    <path d="M379 75l12 42M621 925l-12-42M75 621l42-12M925 379l-42 12" stroke-width="1"/>
+  </g>
+  <g fill="#f4cc82" opacity=".7" filter="url(#portalGlow)">
+    <circle cx="500" cy="500" r="5"/>
+    <circle cx="500" cy="104" r="3"/>
+    <circle cx="896" cy="500" r="3"/>
+    <circle cx="500" cy="896" r="3"/>
+    <circle cx="104" cy="500" r="3"/>
+    <path d="M500 178 510 224 556 234 510 244 500 290 490 244 444 234 490 224Z"/>
+  </g>
+  <g fill="#d5a862" font-family="serif" font-size="48" text-anchor="middle" opacity=".72">
+    <text x="500" y="150">甲</text>
+    <text x="748" y="252">庚</text>
+    <text x="850" y="516">丙</text>
+    <text x="748" y="782">壬</text>
+    <text x="500" y="874">乙</text>
+    <text x="252" y="782">辛</text>
+    <text x="150" y="516">丁</text>
+    <text x="252" y="252">癸</text>
+  </g>
+</svg>

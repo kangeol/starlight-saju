@@ -1,0 +1,18 @@
+{
+  "name": "별빛사주 - AI 사주풀이",
+  "short_name": "별빛사주",
+  "description": "우주의 흐름이 당신의 이야기를 들려주는 모바일 우선 AI 사주풀이 웹앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050914",
+  "theme_color": "#050914",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "assets/icons/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

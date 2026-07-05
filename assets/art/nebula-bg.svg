@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="goldGlow" cx="50%" cy="72%" r="38%">
+      <stop offset="0" stop-color="#e5b86e" stop-opacity=".58"/>
+      <stop offset=".2" stop-color="#c78342" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#050814" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="violetNebula" cx="24%" cy="28%" r="52%">
+      <stop offset="0" stop-color="#a46aff" stop-opacity=".46"/>
+      <stop offset=".34" stop-color="#512d96" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#050814" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blueNebula" cx="78%" cy="36%" r="48%">
+      <stop offset="0" stop-color="#3e8dff" stop-opacity=".34"/>
+      <stop offset=".38" stop-color="#244b96" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#050814" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softBlur" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1000" fill="#030611"/>
+  <rect width="1600" height="1000" fill="url(#violetNebula)"/>
+  <rect width="1600" height="1000" fill="url(#blueNebula)"/>
+  <rect width="1600" height="1000" fill="url(#goldGlow)"/>
+  <g filter="url(#softBlur)" opacity=".64">
+    <path d="M65 690C225 470 306 262 526 216c162-34 256 36 347 8 111-34 166-149 313-144 142 5 252 124 354 238v138c-144-104-275-158-408-131-134 28-178 127-331 143-166 18-248-78-405-27-128 42-216 145-331 323Z" fill="#6f3cff" opacity=".38"/>
+    <path d="M1525 617c-124-138-251-225-384-219-174 8-242 172-428 171-125 0-206-74-343-44-132 29-226 125-314 242l-9 139h1488Z" fill="#2566c8" opacity=".28"/>
+    <path d="M244 314c125 88 231 115 318 79 81-34 126-122 229-131 122-11 216 101 353 76 74-13 143-61 204-140" fill="none" stroke="#d88aff" stroke-width="34" stroke-linecap="round" opacity=".22"/>
+    <path d="M294 777c172-191 326-253 461-188 105 51 174 169 316 160 99-6 190-72 275-196" fill="none" stroke="#dfad65" stroke-width="18" stroke-linecap="round" opacity=".2"/>
+  </g>
+  <g opacity=".82">
+    <circle cx="740" cy="506" r="3.8" fill="#fff0c9"/>
+    <circle cx="1280" cy="260" r="3" fill="#f5d488"/>
+    <circle cx="348" cy="210" r="2.8" fill="#e9c77f"/>
+    <circle cx="996" cy="138" r="2" fill="#fff2cc"/>
+    <circle cx="112" cy="430" r="2.1" fill="#d9b66d"/>
+  </g>
+</svg>

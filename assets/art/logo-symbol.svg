@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Starlight Saju symbol">
+  <defs>
+    <radialGradient id="core" cx="50%" cy="48%" r="58%">
+      <stop offset="0" stop-color="#fff4cf"/>
+      <stop offset=".42" stop-color="#d9ac62"/>
+      <stop offset="1" stop-color="#6f4a22"/>
+    </radialGradient>
+    <linearGradient id="line" x1="14" x2="82" y1="10" y2="88">
+      <stop offset="0" stop-color="#fff1bf"/>
+      <stop offset=".5" stop-color="#c99543"/>
+      <stop offset="1" stop-color="#7a5626"/>
+    </linearGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="2.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="96" height="96" rx="48" fill="#050916"/>
+  <circle cx="48" cy="48" r="37" fill="none" stroke="url(#line)" stroke-width="1.3" opacity=".92"/>
+  <circle cx="48" cy="48" r="25" fill="none" stroke="#d9ac62" stroke-width=".7" opacity=".58"/>
+  <circle cx="48" cy="48" r="12" fill="none" stroke="#f6d48b" stroke-width=".8" opacity=".82"/>
+  <path d="M48 11v74M11 48h74M22 22l52 52M74 22 22 74" fill="none" stroke="url(#line)" stroke-width=".85" opacity=".72"/>
+  <path d="M48 23 55 48 48 73 41 48Z" fill="url(#core)" opacity=".92" filter="url(#glow)"/>
+  <circle cx="48" cy="48" r="3.2" fill="#fff2c9" filter="url(#glow)"/>
+  <path d="M48 5 51 15 61 18 51 21 48 31 45 21 35 18 45 15Z" fill="#f4d58d"/>
+  <path d="M82 38 84 44 90 46 84 48 82 54 80 48 74 46 80 44Z" fill="#c99b50" opacity=".86"/>
+</svg>

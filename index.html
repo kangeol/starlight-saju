@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="별빛사주는 생년월일과 태어난 시간을 바탕으로 사주팔자, 오행, 올해운세, 재물운, 직업운, 애정운을 깊이 있게 풀이하는 프리미엄 AI 명리 상담 서비스입니다."
+    />
+    <meta name="theme-color" content="#030611" />
+    <link rel="canonical" href="https://example.com/ai-saju-webapp/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="별빛사주 - 우주의 흐름이 들려주는 AI 사주풀이" />
+    <meta
+      property="og:description"
+      content="사주팔자와 오행을 기반으로 올해운세, 재물운, 직업운, 애정운을 영화 같은 경험으로 확인해보세요."
+    />
+    <meta property="og:url" content="https://example.com/ai-saju-webapp/" />
+    <meta property="og:image" content="https://example.com/ai-saju-webapp/assets/art/logo-symbol.svg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="별빛사주 - 우주의 흐름이 들려주는 AI 사주풀이" />
+    <meta
+      name="twitter:description"
+      content="사주팔자와 오행을 기반으로 올해운세, 재물운, 직업운, 애정운을 영화 같은 경험으로 확인해보세요."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="preload" as="image" href="assets/art/nebula-bg.svg" />
+    <link rel="preload" as="image" href="assets/art/star-field.svg" />
+    <link rel="preload" as="image" href="assets/art/astrolabe-circle.svg" />
+    <link rel="preload" as="image" href="assets/art/destiny-portal.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <title>별빛사주 | AI 사주풀이 · 무료 사주 · 올해운세</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "별빛사주",
+        "alternateName": "STARLIGHT SAJU",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "description": "사주 계산 엔진과 AI 상담을 결합한 프리미엄 사주풀이 서비스",
+        "url": "https://example.com/ai-saju-webapp/"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "AI가 사주를 직접 계산하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "아니요. 사주 계산은 별도 계산 엔진이 담당하고 AI는 계산 결과를 바탕으로 풀이만 작성합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "API 키가 브라우저에 노출되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "아니요. 프론트엔드는 Google Apps Script URL로만 요청하며 Gemini API 키는 Script Properties에 저장합니다."
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div class="space-layers" aria-hidden="true">
+      <div class="space-layer layer-deep-space"></div>
+      <div class="space-layer nebula nebula--a"></div>
+      <div class="space-layer nebula nebula--b"></div>
+      <div class="space-layer nebula nebula--c"></div>
+      <div class="space-layer constellation-lines"></div>
+      <div class="space-layer cosmic-dust"></div>
+      <div class="space-layer soft-glow-layer"></div>
+      <div class="space-layer astrolabe-bg-layer"></div>
+      <div class="space-layer ui-vignette-layer"></div>
+    </div>
+
+    <div class="app-shell">
+      <header class="hero hero-header">
+        <nav class="topbar" aria-label="상단 메뉴">
+          <a class="brand" href="./" aria-label="별빛사주 홈">
+            <img src="assets/art/logo-symbol.svg" alt="" />
+            <span>
+              별빛사주
+              <small>STARLIGHT SAJU</small>
+            </span>
+          </a>
+          <div class="nav-links" aria-label="서비스 메뉴">
+            <a href="#fortuneForm">홈</a>
+            <a href="#result">사주정보</a>
+            <a href="#luckyItems">행운아이템</a>
+            <a href="#recent-title">고객센터</a>
+          </div>
+          <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">
+            <span id="themeLabel">Auto</span>
+          </button>
+        </nav>
+
+        <div id="noticeBar" class="notice-bar hidden"></div>
+
+        <section class="hero-header-content" aria-labelledby="hero-title">
+          <div class="hero-brand-stack">
+            <img class="hero-symbol" src="assets/art/logo-symbol.svg" alt="" />
+            <h1 id="hero-title" class="brand-title">별빛사주</h1>
+            <div class="title-rule" aria-hidden="true"><span></span><strong>STARLIGHT SAJU</strong><span></span></div>
+            <p class="hero-kicker">우주의 흐름이 당신의 이야기를 들려줍니다.</p>
+          </div>
+        </section>
+      </header>
+
+      <section class="hero-card" aria-labelledby="form-title">
+          <section class="panel input-panel cosmic-form" aria-labelledby="form-title">
+            <div class="section-heading section-heading--center">
+              <div>
+                <h2 id="form-title">사주 정보 입력</h2>
+                <p class="section-heading__kicker">Birth Data</p>
+              </div>
+            </div>
+
+            <form id="fortuneForm" novalidate>
+              <div class="form-grid">
+                <label class="field">
+                  <span>이름 <em>선택</em></span>
+                  <input id="name" name="name" type="text" maxlength="20" placeholder="이름을 입력하세요" autocomplete="name" />
+                </label>
+
+                <div class="field">
+                  <span>성별</span>
+                  <div class="segmented" role="radiogroup" aria-label="성별 선택">
+                    <label>
+                      <input type="radio" name="gender" value="female" checked />
+                      <span>여성</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="gender" value="male" />
+                      <span>남성</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="gender" value="none" />
+                      <span>선택 안함</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field field--calendar">
+                  <span>양력/음력</span>
+                  <div class="segmented" role="radiogroup" aria-label="양력 음력 선택">
+                    <label>
+                      <input type="radio" name="calendarType" value="solar" checked />
+                      <span>양력</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="calendarType" value="lunar" />
+                      <span>음력</span>
+                    </label>
+                  </div>
+                </div>
+
+                <label class="field">
+                  <span>생년월일</span>
+                  <input id="birthDate" name="birthDate" type="date" required />
+                </label>
+
+                <label class="field field--wide">
+                  <span>태어난 시간</span>
+                  <select id="birthTime" name="birthTime" required>
+                    <option value="">시간을 선택하세요</option>
+                    <option value="unknown">모름</option>
+                    <option value="23:30-01:29">자시 23:30-01:29</option>
+                    <option value="01:30-03:29">축시 01:30-03:29</option>
+                    <option value="03:30-05:29">인시 03:30-05:29</option>
+                    <option value="05:30-07:29">묘시 05:30-07:29</option>
+                    <option value="07:30-09:29">진시 07:30-09:29</option>
+                    <option value="09:30-11:29">사시 09:30-11:29</option>
+                    <option value="11:30-13:29">오시 11:30-13:29</option>
+                    <option value="13:30-15:29">미시 13:30-15:29</option>
+                    <option value="15:30-17:29">신시 15:30-17:29</option>
+                    <option value="17:30-19:29">유시 17:30-19:29</option>
+                    <option value="19:30-21:29">술시 19:30-21:29</option>
+                    <option value="21:30-23:29">해시 21:30-23:29</option>
+                  </select>
+                </label>
+              </div>
+
+              <p id="formError" class="form-error" role="alert"></p>
+
+              <button class="primary-button primary-button--cosmic" type="submit" aria-label="별빛으로 내 사주 읽기">
+                <span aria-hidden="true">✧</span>
+                <span>별빛으로 내 사주 읽기</span>
+                <span aria-hidden="true">✦</span>
+              </button>
+              <p class="form-helper">정확한 사주 분석을 위해 가능한 실제 태어난 시간을 입력해주세요.</p>
+            </form>
+          </section>
+      </section>
+
+      <section class="hero-wheel" aria-hidden="true">
+          <div class="astral-floor" aria-hidden="true">
+            <div class="astral-ring astral-ring--outer"></div>
+            <div class="astral-ring astral-ring--middle"></div>
+            <div class="astral-ring astral-ring--inner"></div>
+            <div class="astral-ray"></div>
+          </div>
+      </section>
+
+      <main>
+        <section id="loading" class="loading panel hidden" aria-live="polite">
+          <h2 id="loadingStep">별의 흐름을 깨우는 중...</h2>
+          <div class="progress-track"><i id="loadingProgress"></i></div>
+        </section>
+
+        <section id="result" class="result hidden" aria-labelledby="result-title">
+          <div id="resultRevealMessage" class="result-reveal-message hidden" aria-live="polite"></div>
+
+          <div id="portalTransition" class="cosmic-gate-reveal" aria-hidden="true">
+            <div class="gate-line"></div>
+            <div class="gate-ring gate-ring--outer"></div>
+            <div class="gate-ring gate-ring--inner"></div>
+            <div class="gate-glow"></div>
+            <div class="gate-particles">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+
+          <section class="result-stage panel" data-reveal>
+            <article class="destiny-card">
+              <p class="section-heading__kicker">Oracle</p>
+              <h2>당신의 운명을 읽었습니다</h2>
+              <p>올해 가장 강하게 빛나는 기운은 <strong id="dominantFortuneText">직장운</strong>입니다.</p>
+              <div class="destiny-portal destiny-portal--card" aria-hidden="true">
+                <div class="portal-fog"></div>
+                <div class="portal-core"></div>
+                <div class="portal-ring portal-ring--outer"></div>
+                <div class="portal-ring portal-ring--middle"></div>
+                <div class="portal-ring portal-ring--inner"></div>
+                <div class="portal-hanja">
+                  <span>甲</span><span>庚</span><span>丙</span><span>壬</span>
+                  <span>乙</span><span>辛</span><span>丁</span><span>癸</span>
+                </div>
+                <div class="portal-rays"></div>
+                <div class="portal-dust">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+            </article>
+
+            <article class="result-hero">
+              <div class="result-meta">
+                <p class="section-heading__kicker">2026 Fortune</p>
+                <span id="analysisMode">Mock Mode</span>
+              </div>
+              <h2 id="result-title">2026년 종합 운세</h2>
+              <div class="total-score">
+                <span id="totalScore">0</span>
+                <small>/100</small>
+              </div>
+              <div id="starRating" class="star-rating" aria-label="별점">★★★★★</div>
+              <p id="summary" class="summary"></p>
+              <div class="action-row">
+                <button id="pdfButton" class="secondary-button" type="button" aria-label="PDF 다운로드">상세 리포트 보기</button>
+                <button id="shareKakao" class="secondary-button" type="button" aria-label="카카오 공유">카카오 공유</button>
+                <button id="copyLinkButton" class="secondary-button" type="button" aria-label="링크 복사">링크 복사</button>
+              </div>
+            </article>
+          </section>
+
+          <div class="score-grid" aria-label="운세 점수" data-reveal>
+            <article class="score-card" data-score="money"><span>재물운</span><strong>0</strong><div class="meter"><i></i></div></article>
+            <article class="score-card" data-score="career"><span>직장운</span><strong>0</strong><div class="meter"><i></i></div></article>
+            <article class="score-card" data-score="health"><span>건강운</span><strong>0</strong><div class="meter"><i></i></div></article>
+            <article class="score-card" data-score="love"><span>애정운</span><strong>0</strong><div class="meter"><i></i></div></article>
+            <article class="score-card" data-score="relationship"><span>대인운</span><strong>0</strong><div class="meter"><i></i></div></article>
+          </div>
+
+          <div class="result-grid">
+            <section class="panel" data-reveal>
+              <div class="section-heading">
+                <span class="section-heading__mark"></span>
+                <div>
+                  <p class="section-heading__kicker">Four Pillars</p>
+                  <h2>사주팔자</h2>
+                </div>
+              </div>
+              <div class="pillar-grid">
+                <article data-pillar="year"><span>년주</span><strong>-</strong><small>-</small></article>
+                <article data-pillar="month"><span>월주</span><strong>-</strong><small>-</small></article>
+                <article data-pillar="day"><span>일주</span><strong>-</strong><small>-</small></article>
+                <article data-pillar="hour"><span>시주</span><strong>-</strong><small>-</small></article>
+              </div>
+            </section>
+
+            <section class="panel elements-panel" data-reveal>
+              <div class="section-heading">
+                <span class="section-heading__mark"></span>
+                <div>
+                  <p class="section-heading__kicker">Five Elements</p>
+                  <h2>오행 분석</h2>
+                </div>
+              </div>
+              <div class="elements-layout">
+                <div id="fiveElementsChart" class="donut-chart" role="img"></div>
+                <ul id="fiveElementsLegend" class="element-legend"></ul>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel summary-panel" data-reveal>
+            <div class="section-heading">
+              <span class="section-heading__mark"></span>
+              <div>
+                <p class="section-heading__kicker">Core Insight</p>
+                <h2>오늘의 핵심 한 줄</h2>
+              </div>
+            </div>
+            <p id="summaryEcho" class="summary summary--echo"></p>
+          </section>
+
+          <section class="panel" data-reveal>
+            <div class="section-heading">
+              <span class="section-heading__mark"></span>
+              <div>
+                <p class="section-heading__kicker">Detailed Reading</p>
+                <h2>상세 사주풀이</h2>
+              </div>
+            </div>
+            <div id="accordion" class="accordion"></div>
+          </section>
+
+          <section class="panel" data-reveal>
+            <div class="section-heading">
+              <span class="section-heading__mark"></span>
+              <div>
+                <p class="section-heading__kicker">Lucky Items</p>
+                <h2>AI가 추천하는 행운 아이템</h2>
+              </div>
+            </div>
+            <p class="lucky-disclaimer">
+              부족한 기운을 보완하는 상징 아이템입니다. 실제 효능을 보장하는 것이 아니라 사주적 상징과 분위기를 위한 추천입니다.
+            </p>
+            <div id="luckyItems" class="lucky-items"></div>
+          </section>
+
+          <section class="panel" data-reveal>
+            <div class="section-heading">
+              <span class="section-heading__mark"></span>
+              <div>
+                <p class="section-heading__kicker">Luck Cycle</p>
+                <h2>대운 흐름</h2>
+              </div>
+            </div>
+            <ul id="luckCycle" class="luck-cycle"></ul>
+          </section>
+        </section>
+
+        <aside class="panel recent-panel" aria-labelledby="recent-title">
+          <div class="section-heading section-heading--compact">
+            <span class="section-heading__mark"></span>
+            <div>
+              <p class="section-heading__kicker">History</p>
+              <h2 id="recent-title">최근 본 사주</h2>
+            </div>
+          </div>
+          <div id="recentList" class="recent-list"></div>
+          <button id="clearRecent" class="text-button" type="button" aria-label="최근 본 사주 기록 비우기">최근 기록 비우기</button>
+        </aside>
+      </main>
+    </div>
+
+    <div id="cosmicLoading" class="cosmic-loading hidden" role="status" aria-live="polite" aria-hidden="true">
+      <canvas id="cosmicCanvas" aria-hidden="true"></canvas>
+      <div class="loading-portal-reveal" aria-hidden="true"></div>
+      <svg class="cosmic-sigil" viewBox="0 0 420 420" aria-hidden="true">
+        <circle cx="210" cy="210" r="178"></circle>
+        <circle cx="210" cy="210" r="132"></circle>
+        <circle cx="210" cy="210" r="76"></circle>
+        <path d="M210 32v356M32 210h356M84 84l252 252M336 84L84 336"></path>
+        <path d="M210 78l42 132-42 132-42-132z"></path>
+      </svg>
+      <div class="ganji-rain" aria-hidden="true">
+        <span>甲</span><span>乙</span><span>丙</span><span>丁</span><span>戊</span><span>己</span><span>庚</span><span>辛</span><span>壬</span><span>癸</span>
+        <span>子</span><span>丑</span><span>寅</span><span>卯</span><span>辰</span><span>巳</span><span>午</span><span>未</span><span>申</span><span>酉</span><span>戌</span><span>亥</span>
+      </div>
+      <div class="cosmic-core" aria-hidden="true"></div>
+      <div class="cosmic-loading__content">
+        <p class="eyebrow">STARLIGHT SAJU</p>
+        <h2 id="cosmicLoadingText">별의 흐름을 깨우는 중...</h2>
+        <p id="cosmicLongWait" class="cosmic-long-wait hidden">별빛 연결이 길어지고 있습니다. 조금만 더 기다려주세요.</p>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="src/services/config.js"></script>
+    <script src="src/lib/saju/utils.js"></script>
+    <script src="src/lib/saju/ganji.js"></script>
+    <script src="src/lib/saju/calendar.js"></script>
+    <script src="src/lib/saju/fiveElements.js"></script>
+    <script src="src/lib/saju/luckCycle.js"></script>
+    <script src="src/lib/saju/sajuCalculator.js"></script>
+    <script src="src/services/storage.js"></script>
+    <script src="src/components/accordion.js"></script>
+    <script src="src/components/chart.js"></script>
+    <script src="src/components/cosmicLoading.js"></script>
+    <script src="src/components/resultReveal.js"></script>
+    <script src="src/services/gemini.js"></script>
+    <script src="src/services/ui.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
