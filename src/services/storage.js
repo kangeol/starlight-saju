@@ -7,7 +7,7 @@
   const prefix = config.STORAGE_PREFIX;
 
   const KEYS = {
-    fortuneCache: `${prefix}:fortuneCache:v7`,
+    fortuneCache: `${prefix}:fortuneCache:v71`,
     recent: `${prefix}:recentReadings`,
     session: `${prefix}:currentSession`,
     theme: `${prefix}:theme`,

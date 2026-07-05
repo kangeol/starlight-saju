@@ -1247,7 +1247,9 @@ body::before {
 }
 
 .summary--echo {
-  font-size: 1rem;
+  font-size: clamp(1.08rem, 4.2vw, 1.35rem);
+  font-weight: 900;
+  line-height: 1.45;
 }
 
 .question-examples {

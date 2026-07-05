@@ -291,6 +291,8 @@
         relationship: clampScore(scores.relationship),
       },
       summary: data.summary,
+      todayInsight: data.todayInsight || data.coreMessage || "",
+      coreMessage: data.coreMessage || data.todayInsight || "",
       analysisBasis: data.analysisBasis || null,
       coreInsight: Array.isArray(data.coreInsight) ? data.coreInsight : [],
       goodActions: Array.isArray(data.goodActions) ? data.goodActions : [],
@@ -363,32 +365,19 @@
     };
     const goodActions = getDefaultGoodActions(profile.weakest);
     const avoidActions = getDefaultAvoidActions(profile.strongest);
-    const lucky = getDefaultLucky(profile.weakest);
+    const lucky = getDefaultLucky(profile.weakest, birthData, saju);
     const year = saju.yearFortune?.year || new Date().getFullYear();
     const yearPillar = saju.yearFortune?.pillar || String(year);
-    const summary = limitText(
-      [
-        "기본 분석 결과를 먼저 보여드립니다.",
-        `사주 구조를 보면 ${profile.strongestLabel} 기운이 비교적 강하고 ${profile.weakestLabel} 기운을 생활 속에서 보완하는 흐름이 필요합니다.`,
-        `올해는 ${year}년 ${yearPillar} 세운을 기준으로 무리한 확장보다 이미 잡힌 일의 기준을 세우는 편이 안정적입니다.`,
-        `직업운은 관성과 식상의 균형을 보며, 맡은 역할을 선명하게 정리하고 결과물을 꾸준히 쌓을 때 강점이 살아납니다.`,
-        `재물운은 재성과 오행 흐름을 함께 보아야 하므로 큰 수익보다 지출 통제와 반복 수입 관리가 먼저입니다.`,
-        `애정운은 일지와 배우자궁의 안정감이 중요해 감정의 속도보다 약속과 생활 리듬을 맞추는 태도가 좋습니다.`,
-        `건강운은 ${profile.strongestLabel} 과다와 ${profile.weakestLabel} 부족을 함께 조절하는 생활 습관이 핵심입니다.`,
-        `대인관계는 비겁, 인성, 식상의 흐름을 나누어 보면 경쟁보다 역할 분담을 분명히 할 때 편안해집니다.`,
-        `성격 흐름은 일주 ${pillars.day}를 중심으로 보며, 강한 기운을 밀어붙이는 방식보다 부족한 기운을 보완하는 선택에서 균형이 생깁니다.`,
-        `좋은 행동은 ${profile.weakestLabel} 기운을 채우는 생활 루틴을 작게 반복하는 것이고, 주의할 점은 ${profile.strongestLabel} 기운이 과해질 때 말과 결정이 급해지는 흐름입니다.`,
-        "따라서 지금은 큰 결론을 서두르기보다 일, 돈, 관계, 몸의 리듬을 각각 분리해서 점검하는 편이 실제 변화에 도움이 됩니다.",
-        "특히 같은 문제를 반복해서 겪고 있다면 운이 나빠서라기보다 강한 기운을 쓰는 방식이 한쪽으로 치우쳤을 가능성이 있으니, 작은 습관부터 조정하는 것이 가장 현실적입니다.",
-      ].join(" "),
-      900,
-    );
+    const summary = buildDefaultSummary(profile, year, yearPillar);
+    const todayInsight = buildTodayInsight(profile, birthData, saju);
 
     return {
       sessionId: window.SajuUtils.simpleHash({ birthData, saju, version: "v7-client-basic" }),
       totalScore: scores.total,
       scores,
       summary,
+      todayInsight,
+      coreMessage: todayInsight,
       analysisBasis: {
         pillars,
         fiveElements: ratio,
@@ -399,25 +388,26 @@
         ],
       },
       coreInsight: [
+        todayInsight,
         `${profile.strongestLabel} 기운은 강점으로 쓰고 ${profile.weakestLabel} 기운은 생활 습관으로 보완하는 구조입니다.`,
         "직업, 재물, 애정, 건강, 대인관계는 서로 다른 기준으로 분리해 보았습니다.",
       ],
       goodActions,
       avoidActions,
       sections: {
-        personality: `일주 ${pillars.day}와 오행 흐름을 함께 보면 ${profile.strongestLabel} 기운이 먼저 드러나는 편입니다. 다만 ${profile.weakestLabel} 기운이 약해지는 시기에는 판단의 균형이 흔들릴 수 있어 생활 속 보완이 중요합니다.`,
+        personality: limitText(`일주 ${pillars.day}와 오행 흐름을 함께 보면 ${profile.strongestLabel} 기운이 먼저 드러나는 편입니다. 다만 ${profile.weakestLabel} 기운이 약해지는 시기에는 판단의 균형이 흔들릴 수 있어 생활 속 보완이 중요합니다.`, 220),
         earlyLife: `초년운은 년주 ${pillars.year}와 전체 오행 균형을 함께 봅니다. 주변 환경의 영향을 받되 자신의 강한 기운을 어떻게 쓰는지가 중요합니다.`,
         middleLife: `중년운은 월주 ${pillars.month}와 직업적 책임의 흐름을 중심으로 봅니다. 역할을 넓히기보다 기준을 세우고 성과를 누적하는 방식이 안정적입니다.`,
         lateLife: `말년운은 부족한 ${profile.weakestLabel} 기운을 얼마나 꾸준히 보완했는지에 따라 안정감이 달라집니다.`,
-        yearFortune: `${year}년 ${yearPillar} 흐름에서는 빠른 변화보다 기준을 세우고 반복 가능한 선택을 만드는 것이 좋습니다.`,
-        money: "재물운은 재성 흐름과 오행 균형을 함께 봅니다. 큰 수익을 급히 좇기보다 지출 구조, 현금 흐름, 회수 시점을 먼저 정리하는 편이 안정적입니다.",
-        career: "직업운은 관성, 식상, 일간 구조를 기준으로 봅니다. 책임이 분명한 일, 결과물을 보여줄 수 있는 일, 개선이 필요한 일을 차분히 정리할 때 강점이 살아납니다.",
+        yearFortune: limitText(`${year}년 ${yearPillar} 흐름에서는 빠른 변화보다 기준을 세우고 반복 가능한 선택을 만드는 것이 좋습니다. 무리한 확장보다 이미 잡힌 일의 방향을 정리하는 쪽이 안정적입니다.`, 220),
+        money: limitText("재물운은 재성 흐름과 오행 균형을 함께 봅니다. 큰 수익을 급히 좇기보다 지출 구조, 현금 흐름, 회수 시점을 먼저 정리하는 편이 안정적입니다.", 220),
+        career: limitText("직업운은 관성, 식상, 일간 구조를 기준으로 봅니다. 책임이 분명한 일, 결과물을 보여줄 수 있는 일, 개선이 필요한 일을 차분히 정리할 때 강점이 살아납니다.", 220),
         business: "사업운은 확장보다 반복 매출과 비용 통제 구조가 먼저입니다. 작은 검증을 거친 뒤 넓히는 방식이 좋습니다.",
         jobChange: "이직운은 감정적인 이동보다 역할, 보상, 성장 가능성을 문서로 비교할 때 유리합니다.",
-        love: "애정운은 일지와 배우자궁을 기준으로 봅니다. 관계에서는 감정의 속도보다 약속, 생활 리듬, 말의 온도를 맞추는 태도가 중요합니다.",
+        love: limitText("애정운은 일지와 배우자궁을 기준으로 봅니다. 관계에서는 감정의 속도보다 약속, 생활 리듬, 말의 온도를 맞추는 태도가 중요합니다.", 220),
         marriage: "결혼운은 생활 기준이 맞는지 확인하는 과정이 중요합니다. 급한 결정은 피하고 현실 조건을 함께 조율하는 편이 좋습니다.",
-        health: `건강운은 오행 과다와 부족을 함께 봅니다. ${profile.strongestLabel} 기운이 과열되지 않게 하고 ${profile.weakestLabel} 기운을 보완하는 수면, 식사, 휴식 리듬이 필요합니다.`,
-        relationship: "대인관계는 비겁, 인성, 식상의 흐름을 나누어 봅니다. 경쟁 구도에서는 역할을 분명히 하고, 가까운 관계에서는 설명을 생략하지 않는 태도가 좋습니다.",
+        health: limitText(`건강운은 오행 과다와 부족을 함께 봅니다. ${profile.strongestLabel} 기운이 과열되지 않게 하고 ${profile.weakestLabel} 기운을 보완하는 수면, 식사, 휴식 리듬이 필요합니다.`, 220),
+        relationship: limitText("대인관계는 비겁, 인성, 식상의 흐름을 나누어 봅니다. 경쟁 구도에서는 역할을 분명히 하고, 가까운 관계에서는 설명을 생략하지 않는 태도가 좋습니다.", 220),
         goodActions: goodActions.join("\n"),
         cautions: avoidActions.join("\n"),
         luckyColor: lucky.color,
@@ -508,16 +498,105 @@
     return table[strongest] || table.water;
   }
 
-  function getDefaultLucky(weakest) {
-    const table = {
-      wood: { color: "딥 그린", number: "3", direction: "동쪽" },
-      fire: { color: "와인 레드", number: "9", direction: "남쪽" },
-      earth: { color: "샌드 골드", number: "5", direction: "중앙" },
-      metal: { color: "샴페인 실버", number: "7", direction: "서쪽" },
-      water: { color: "딥 블루", number: "1", direction: "북쪽" },
-    };
+  function buildDefaultSummary(profile, year, yearPillar) {
+    return limitText(
+      [
+        `사주 구조를 보면 ${profile.strongestLabel} 기운이 비교적 강하고 ${profile.weakestLabel} 기운을 생활 속에서 보완하는 흐름이 필요합니다.`,
+        `올해는 ${year}년 ${yearPillar} 세운을 기준으로 속도보다 기준을 세우는 선택이 유리합니다.`,
+        "일과 돈은 확장보다 역할, 지출, 반복 가능한 성과를 정리할수록 안정됩니다.",
+        "관계와 건강은 감정의 속도를 낮추고 생활 리듬을 일정하게 가져갈 때 흐름이 부드러워지며, 무리한 비교보다 꾸준한 조정이 중요합니다.",
+      ].join(" "),
+      400,
+    );
+  }
 
-    return table[weakest] || table.water;
+  function buildTodayInsight(profile, birthData, saju) {
+    const seed = createPersonalSeed(birthData, saju);
+    const messages = [
+      "속도를 조금 줄이면 방향이 또렷해집니다.",
+      `${profile.weakestLabel} 기운을 채우면 균형이 잡힙니다.`,
+      "오늘은 확장보다 정리가 더 유리합니다.",
+      `${profile.strongestLabel} 기운을 부드럽게 쓰는 날입니다.`,
+      `${profile.weakestLabel} 기운을 보완할수록 흐름이 열립니다.`,
+      "말보다 리듬을 맞출 때 운이 편안합니다.",
+    ];
+
+    return fitInsight(messages[seed % messages.length]);
+  }
+
+  function fitInsight(text) {
+    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    if (clean.length >= 20 && clean.length <= 35) return clean;
+    if (clean.length > 35) return `${clean.slice(0, 34).trim()}.`;
+    return `오늘은 ${clean}`;
+  }
+
+  function getDefaultLucky(weakest, birthData, saju) {
+    const element = getElementKey(saju.yongSin) || weakest || "water";
+    const seed = createPersonalSeed(birthData, saju);
+    const table = {
+      wood: {
+        colors: ["딥 그린", "청록", "올리브 그린", "에메랄드"],
+        directions: ["동쪽", "동남쪽"],
+        numbers: [3, 4, 8],
+      },
+      fire: {
+        colors: ["와인 레드", "코랄 오렌지", "로즈 핑크", "버건디"],
+        directions: ["남쪽", "남동쪽"],
+        numbers: [2, 7, 9],
+      },
+      earth: {
+        colors: ["샌드 골드", "웜 베이지", "브라운", "머스터드"],
+        directions: ["중앙", "남서쪽"],
+        numbers: [5, 6, 10],
+      },
+      metal: {
+        colors: ["샴페인 실버", "아이보리 화이트", "플래티넘", "소프트 골드"],
+        directions: ["서쪽", "북서쪽"],
+        numbers: [4, 7, 9],
+      },
+      water: {
+        colors: ["딥 블루", "네이비", "블랙", "아쿠아 블루"],
+        directions: ["북쪽", "북동쪽"],
+        numbers: [1, 6, 8],
+      },
+    };
+    const meta = table[element] || table.water;
+
+    return {
+      color: meta.colors[seed % meta.colors.length],
+      number: String(meta.numbers[Math.floor(seed / 3) % meta.numbers.length]),
+      direction: meta.directions[Math.floor(seed / 7) % meta.directions.length],
+    };
+  }
+
+  function getElementKey(value) {
+    const text = String(value || "").toLowerCase();
+    if (text.includes("wood") || text.includes("목")) return "wood";
+    if (text.includes("fire") || text.includes("화")) return "fire";
+    if (text.includes("earth") || text.includes("토")) return "earth";
+    if (text.includes("metal") || text.includes("금")) return "metal";
+    if (text.includes("water") || text.includes("수")) return "water";
+    return "";
+  }
+
+  function createPersonalSeed(birthData, saju) {
+    const source = [
+      birthData.birthDate,
+      birthData.hourUnknown ? "UNKNOWN" : birthData.birthTime,
+      birthData.gender,
+      birthData.calendarType,
+      saju.dayPillar,
+      saju.yongSin,
+      saju.heeSin,
+    ].join("|");
+    let hash = 0;
+
+    for (let index = 0; index < source.length; index += 1) {
+      hash = (hash * 31 + source.charCodeAt(index)) % 1000003;
+    }
+
+    return Math.abs(hash);
   }
 
   function limitText(text, limit) {

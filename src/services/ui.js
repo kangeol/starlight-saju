@@ -86,7 +86,13 @@
     setText("#totalScore", analysis.totalScore);
     setText("#starRating", createStars(analysis.totalScore));
     setText("#summary", analysis.summary);
-    setText("#summaryEcho", analysis.summary);
+    setText(
+      "#summaryEcho",
+      analysis.todayInsight ||
+        analysis.coreMessage ||
+        (Array.isArray(analysis.coreInsight) ? analysis.coreInsight[0] : "") ||
+        window.ResultReveal.getDominantFortune(analysis.scores),
+    );
     hideAnalysisMode();
 
     renderScores(analysis.scores);
