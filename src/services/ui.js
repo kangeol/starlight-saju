@@ -211,6 +211,14 @@
   function renderBasisInsights(saju, analysis) {
     const container = qs("#basisInsights");
     if (!container) return;
+    const basisInsights = analysis.analysisBasis?.keyInsights;
+
+    if (Array.isArray(basisInsights) && basisInsights.length) {
+      container.innerHTML = basisInsights
+        .map((text) => `<li>${escapeHtml(text)}</li>`)
+        .join("");
+      return;
+    }
 
     const dominant = saju.fiveElements.labels[saju.fiveElements.dominant];
     const weakest = saju.fiveElements.labels[saju.fiveElements.weakest];
