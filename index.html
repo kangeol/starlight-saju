@@ -90,7 +90,7 @@
     <div class="app-shell">
       <header class="hero hero-header">
         <nav class="topbar" aria-label="상단 메뉴">
-          <a class="brand" href="./" aria-label="별빛사주 홈">
+          <a class="brand" href="#fortuneForm" aria-label="첫 화면으로 이동">
             <img src="assets/art/logo-symbol.svg" alt="" />
             <span>
               별빛사주
@@ -100,7 +100,6 @@
           <div class="nav-links" aria-label="서비스 메뉴">
             <a href="#fortuneForm">홈</a>
             <a href="#result">사주정보</a>
-            <a href="#luckyItems">행운아이템</a>
             <a href="#recent-title">고객센터</a>
           </div>
           <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">
@@ -168,29 +167,83 @@
                   </div>
                 </div>
 
-                <label class="field">
+                <div class="field field--birth-date field--wide">
                   <span>생년월일</span>
-                  <input id="birthDate" name="birthDate" type="date" required />
-                </label>
+                  <div class="birth-date-inputs" role="group" aria-label="생년월일 입력">
+                    <label>
+                      <small>출생년도</small>
+                      <input
+                        id="birthYear"
+                        name="birthYear"
+                        type="number"
+                        inputmode="numeric"
+                        min="1900"
+                        max="2026"
+                        placeholder="예: 1986"
+                        autocomplete="bday-year"
+                        required
+                      />
+                    </label>
+                    <label>
+                      <small>월</small>
+                      <select id="birthMonth" name="birthMonth" autocomplete="bday-month" required>
+                        <option value="">월</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                      </select>
+                    </label>
+                    <label>
+                      <small>일</small>
+                      <select id="birthDay" name="birthDay" autocomplete="bday-day" required>
+                        <option value="">일</option>
+                      </select>
+                    </label>
+                  </div>
+                  <input id="birthDate" name="birthDate" type="hidden" />
+                </div>
 
                 <label class="field field--wide">
                   <span>태어난 시간</span>
-                  <select id="birthTime" name="birthTime" required>
-                    <option value="">시간을 선택하세요</option>
-                    <option value="unknown">모름</option>
-                    <option value="23:30-01:29">자시 23:30-01:29</option>
-                    <option value="01:30-03:29">축시 01:30-03:29</option>
-                    <option value="03:30-05:29">인시 03:30-05:29</option>
-                    <option value="05:30-07:29">묘시 05:30-07:29</option>
-                    <option value="07:30-09:29">진시 07:30-09:29</option>
-                    <option value="09:30-11:29">사시 09:30-11:29</option>
-                    <option value="11:30-13:29">오시 11:30-13:29</option>
-                    <option value="13:30-15:29">미시 13:30-15:29</option>
-                    <option value="15:30-17:29">신시 15:30-17:29</option>
-                    <option value="17:30-19:29">유시 17:30-19:29</option>
-                    <option value="19:30-21:29">술시 19:30-21:29</option>
-                    <option value="21:30-23:29">해시 21:30-23:29</option>
-                  </select>
+                  <div class="birth-time-inputs">
+                    <select id="birthTimePreset" name="birthTimePreset" aria-label="태어난 시간 선택">
+                      <option value="unknown" selected>시간 모름</option>
+                      <option value="00:30">00:30</option>
+                      <option value="01:30">01:30</option>
+                      <option value="02:30">02:30</option>
+                      <option value="03:30">03:30</option>
+                      <option value="04:30">04:30</option>
+                      <option value="05:30">05:30</option>
+                      <option value="06:30">06:30</option>
+                      <option value="07:30">07:30</option>
+                      <option value="08:30">08:30</option>
+                      <option value="09:30">09:30</option>
+                      <option value="10:30">10:30</option>
+                      <option value="11:30">11:30</option>
+                      <option value="12:30">12:30</option>
+                      <option value="13:30">13:30</option>
+                      <option value="14:30">14:30</option>
+                      <option value="15:30">15:30</option>
+                      <option value="16:30">16:30</option>
+                      <option value="17:30">17:30</option>
+                      <option value="18:30">18:30</option>
+                      <option value="19:30">19:30</option>
+                      <option value="20:30">20:30</option>
+                      <option value="21:30">21:30</option>
+                      <option value="22:30">22:30</option>
+                      <option value="23:30">23:30</option>
+                    </select>
+                    <input id="birthTime" name="birthTime" type="time" aria-label="태어난 시간 직접 입력" disabled />
+                  </div>
                 </label>
               </div>
 
@@ -259,7 +312,7 @@
             <article class="result-hero">
               <div class="result-meta">
                 <p class="section-heading__kicker">2026 Fortune</p>
-                <span id="analysisMode">Mock Mode</span>
+                <span id="analysisMode">API Mode</span>
               </div>
               <h2 id="result-title">2026년 종합 운세</h2>
               <div class="total-score">
@@ -268,11 +321,9 @@
               </div>
               <div id="starRating" class="star-rating" aria-label="별점">★★★★★</div>
               <p id="summary" class="summary"></p>
-              <div class="action-row">
-                <button id="pdfButton" class="secondary-button" type="button" aria-label="PDF 다운로드">상세 리포트 보기</button>
-                <button id="shareKakao" class="secondary-button" type="button" aria-label="카카오 공유">카카오 공유</button>
-                <button id="copyLinkButton" class="secondary-button" type="button" aria-label="링크 복사">링크 복사</button>
-              </div>
+              <p id="timeUnknownNotice" class="time-unknown-notice hidden">
+                태어난 시간을 모르는 경우에는 년주·월주·일주를 중심으로 분석합니다. 태어난 시간을 입력하면 더 정확한 풀이가 가능합니다.
+              </p>
             </article>
           </section>
 
@@ -316,6 +367,21 @@
             </section>
           </div>
 
+          <section class="panel analysis-basis-panel" data-reveal>
+            <div class="section-heading">
+              <span class="section-heading__mark"></span>
+              <div>
+                <p class="section-heading__kicker">Reading Basis</p>
+                <h2>사주 분석 근거</h2>
+              </div>
+            </div>
+            <div class="analysis-basis-layout">
+              <div id="basisPillars" class="basis-pillars" aria-label="사주 기둥 근거"></div>
+              <div id="basisElements" class="basis-elements" aria-label="오행 분석 근거"></div>
+              <ul id="basisInsights" class="basis-insights"></ul>
+            </div>
+          </section>
+
           <section class="panel summary-panel" data-reveal>
             <div class="section-heading">
               <span class="section-heading__mark"></span>
@@ -336,20 +402,6 @@
               </div>
             </div>
             <div id="accordion" class="accordion"></div>
-          </section>
-
-          <section class="panel" data-reveal>
-            <div class="section-heading">
-              <span class="section-heading__mark"></span>
-              <div>
-                <p class="section-heading__kicker">Lucky Items</p>
-                <h2>AI가 추천하는 행운 아이템</h2>
-              </div>
-            </div>
-            <p class="lucky-disclaimer">
-              부족한 기운을 보완하는 상징 아이템입니다. 실제 효능을 보장하는 것이 아니라 사주적 상징과 분위기를 위한 추천입니다.
-            </p>
-            <div id="luckyItems" class="lucky-items"></div>
           </section>
 
           <section class="panel" data-reveal>

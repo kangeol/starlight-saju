@@ -40,12 +40,13 @@
     active = true;
     overlay.classList.remove("hidden", "cosmic-loading--closing", "cosmic-loading--failed");
     overlay.setAttribute("aria-hidden", "false");
+    overlay.classList.toggle("cosmic-loading--mobile-lite", isMobilePerformanceMode());
     status.textContent = steps[0].text;
     if (longWait) longWait.classList.add("hidden");
 
-    setupCanvas();
+    const canvasEnabled = setupCanvas();
     updateStep();
-    draw();
+    if (canvasEnabled) draw();
 
     return {
       finish,
@@ -64,8 +65,8 @@
     stop();
   }
 
-  async function fail() {
-    setStatus("별빛 연결이 잠시 불안정합니다. 잠시 후 다시 시도해주세요.");
+  async function fail(message) {
+    setStatus(message || "현재 AI 분석 서버 연결에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
     document.querySelector("#cosmicLoading")?.classList.add("cosmic-loading--failed");
     await wait(900);
     stop();
@@ -87,13 +88,23 @@
 
   function setupCanvas() {
     canvas = document.querySelector("#cosmicCanvas");
-    if (!canvas) return;
+    if (!canvas) return false;
+
+    if (isMobilePerformanceMode()) {
+      canvas.width = 0;
+      canvas.height = 0;
+      ctx = null;
+      particles = [];
+      meteors = [];
+      return false;
+    }
 
     ctx = canvas.getContext("2d", { alpha: true });
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas, { passive: true });
     particles = createParticles();
     meteors = createMeteors();
+    return true;
   }
 
   function resizeCanvas() {
@@ -108,7 +119,8 @@
 
   function createParticles() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const count = reducedMotion ? 18 : Math.min(62, Math.floor(window.innerWidth / 7));
+    const baseCount = Math.min(62, Math.floor(window.innerWidth / 7));
+    const count = reducedMotion ? 18 : isMobilePerformanceMode() ? Math.max(6, Math.floor(baseCount * 0.2)) : baseCount;
 
     return Array.from({ length: count }, () => ({
       x: Math.random() * window.innerWidth,
@@ -201,7 +213,7 @@
     const longWait = document.querySelector("#cosmicLongWait");
     if (longWait) longWait.classList.toggle("hidden", elapsed < longWaitMs);
 
-    window.setTimeout(updateStep, 120);
+    window.setTimeout(updateStep, isMobilePerformanceMode() ? 220 : 120);
   }
 
   function setStatus(text) {
@@ -211,6 +223,10 @@
 
   function wait(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  function isMobilePerformanceMode() {
+    return window.matchMedia("(max-width: 768px)").matches;
   }
 
   window.CosmicLoading = {

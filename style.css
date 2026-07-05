@@ -99,6 +99,7 @@ a {
   color: var(--text);
   text-decoration: none;
   font-weight: 900;
+  cursor: pointer;
 }
 
 .brand img {
@@ -326,6 +327,14 @@ input::placeholder {
 .question-form button:active,
 .icon-button:active {
   transform: translateY(1px);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.question-form button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+  transform: none;
 }
 
 .hidden {
@@ -4395,5 +4404,224 @@ select:focus {
     width: 245%;
     max-width: none;
     opacity: 0.34;
+  }
+}
+
+/* V5 Beta Release Candidate
+   Stability and mobile performance overrides. The visual direction stays intact; heavy layers are reduced only on small screens. */
+.birth-date-inputs {
+  display: grid;
+  grid-template-columns: 1.35fr 0.82fr 0.82fr;
+  gap: 10px;
+}
+
+.birth-date-inputs label {
+  display: grid;
+  gap: 7px;
+}
+
+.birth-date-inputs small {
+  color: rgba(235, 226, 205, 0.72);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.birth-date-inputs input,
+.birth-date-inputs select {
+  width: 100%;
+}
+
+.birth-date-inputs input::-webkit-outer-spin-button,
+.birth-date-inputs input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.birth-date-inputs input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.birth-time-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.birth-time-inputs input:disabled {
+  cursor: not-allowed;
+  opacity: 0.54;
+}
+
+.time-unknown-notice {
+  margin: 14px 0 0;
+  color: rgba(235, 226, 205, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.analysis-basis-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.basis-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.basis-pillars div {
+  padding: 14px 12px;
+  border: 1px solid rgba(218, 169, 96, 0.22);
+  border-radius: 8px;
+  background: rgba(3, 6, 17, 0.38);
+}
+
+.basis-pillars span,
+.basis-element-row span {
+  display: block;
+  color: rgba(235, 226, 205, 0.64);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.basis-pillars strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--gold-strong);
+  font-family: var(--serif);
+  font-size: 1.12rem;
+}
+
+.basis-elements {
+  display: grid;
+  gap: 10px;
+}
+
+.basis-element-row {
+  display: grid;
+  grid-template-columns: 34px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+}
+
+.basis-element-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.basis-element-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(120, 88, 221, 0.78), rgba(218, 169, 96, 0.88));
+}
+
+.basis-element-row strong {
+  color: rgba(235, 226, 205, 0.82);
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.basis-insights {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.basis-insights li {
+  position: relative;
+  padding-left: 18px;
+  color: rgba(235, 226, 205, 0.78);
+  font-size: 0.94rem;
+  line-height: 1.72;
+}
+
+.basis-insights li::before {
+  content: "";
+  position: absolute;
+  top: 0.75em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-strong);
+  box-shadow: 0 0 12px rgba(218, 169, 96, 0.38);
+}
+
+@media (max-width: 768px) {
+  .space-layers .nebula--b,
+  .space-layers .nebula--c,
+  .space-layers .soft-glow-layer {
+    display: none;
+  }
+
+  .space-layers .nebula--a {
+    opacity: 0.42;
+    filter: saturate(1.08) contrast(1.04);
+    animation: none;
+  }
+
+  .space-layers .astrolabe-bg-layer,
+  .astral-floor,
+  .astral-ring,
+  .cosmic-sigil,
+  .loading-portal-reveal,
+  .portal-ring,
+  .gate-ring {
+    animation: none !important;
+  }
+
+  .constellation-lines,
+  .cosmic-dust {
+    opacity: 0.42;
+  }
+
+  .cosmic-loading--mobile-lite #cosmicCanvas {
+    display: none;
+  }
+
+  .cosmic-loading--mobile-lite .ganji-rain span:nth-child(n+6),
+  .portal-dust i:nth-child(n+3),
+  .gate-particles i:nth-child(n+3) {
+    display: none;
+  }
+
+  .hero-card .input-panel,
+  .result-stage,
+  .result .panel {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-card .input-panel {
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.56),
+      0 0 58px rgba(100, 68, 205, 0.16),
+      inset 0 1px 0 rgba(255, 245, 216, 0.13);
+  }
+
+  .result-stage,
+  .result .panel {
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.48),
+      inset 0 1px 0 rgba(255, 245, 216, 0.1);
+  }
+
+  [data-reveal] {
+    transition-duration: 260ms;
+  }
+}
+
+@media (max-width: 520px) {
+  .birth-date-inputs,
+  .birth-time-inputs,
+  .basis-pillars {
+    grid-template-columns: 1fr;
   }
 }

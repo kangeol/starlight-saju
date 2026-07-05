@@ -7,13 +7,18 @@
   const ADMIN_STORAGE_KEY = "aiSajuAdminSettings";
 
   const defaultConfig = {
-    APPS_SCRIPT_URL: "",
-    USE_MOCK_WHEN_API_EMPTY: true,
+    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwXEtB_cU0e9sz-ewcWJsE4FDb7DQs2Sw5IGTWoJEKNXwOCWGG5j2DKjT9Y1ikANh2DwQ/exec",
+    USE_MOCK_WHEN_API_EMPTY: false,
     API_TIMEOUT_MS: 30000,
     STORAGE_PREFIX: "aiSajuV4",
     RECENT_LIMIT: 10,
     ENABLE_AI_CHAT: false,
-    DEFAULT_MODEL: "gemini-1.5-flash",
+    ENABLE_LUCKY_ITEMS: false,
+    ENABLE_COMPATIBILITY: false,
+    ENABLE_SHARE_CARD: false,
+    ENABLE_PDF_EXPORT: false,
+    ENABLE_PREMIUM: false,
+    DEFAULT_MODEL: "gemini-2.5-flash",
     BRAND_NAME: "별빛사주",
     SITE_URL: "https://example.com/ai-saju-webapp/",
   };

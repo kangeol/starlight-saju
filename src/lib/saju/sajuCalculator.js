@@ -10,7 +10,16 @@
     const yearPillar = window.SajuGanji.getYearPillar(dateParts);
     const monthPillar = window.SajuGanji.getMonthPillar(dateParts, yearPillar);
     const dayPillar = window.SajuGanji.getDayPillar(dateParts);
-    const hourPillar = window.SajuGanji.getHourPillar(input.birthTime, dayPillar);
+    const hourUnknown = input.hourUnknown || input.birthTime === "unknown";
+    const hourPillar = hourUnknown
+      ? {
+          stem: "UNKNOWN",
+          branch: "UNKNOWN",
+          text: "시간 모름",
+          timeLabel: "시간 모름",
+          unknown: true,
+        }
+      : window.SajuGanji.getHourPillar(input.birthTime, dayPillar);
     const pillars = [yearPillar, monthPillar, dayPillar, hourPillar];
     const fiveElements = window.SajuFiveElements.calculateFiveElements(pillars);
     const tenGods = window.SajuFiveElements.calculateTenGods(dayPillar, pillars);
@@ -44,11 +53,15 @@
         calendarType: input.calendarType,
         birthDate: input.birthDate,
         birthTime: input.birthTime,
+        birthTimeLabel: input.birthTimeLabel || input.birthTime,
+        hourUnknown,
       },
       yearPillar: yearPillar.text,
       monthPillar: monthPillar.text,
       dayPillar: dayPillar.text,
-      hourPillar: hourPillar.text,
+      hourPillar: hourUnknown ? "UNKNOWN" : hourPillar.text,
+      hourPillarLabel: hourPillar.text,
+      hourUnknown,
       pillars: {
         year: yearPillar,
         month: monthPillar,

@@ -63,6 +63,10 @@
     localStorage.removeItem(KEYS.recent);
   }
 
+  function clearCurrentSession() {
+    localStorage.removeItem(KEYS.session);
+  }
+
   function getTheme() {
     return localStorage.getItem(KEYS.theme) || "auto";
   }
@@ -72,6 +76,7 @@
   }
 
   window.AppStorage = {
+    clearCurrentSession,
     clearRecentReadings,
     getCurrentSession,
     getRecentReadings,

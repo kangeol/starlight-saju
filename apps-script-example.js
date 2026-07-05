@@ -8,10 +8,10 @@
  *
  * Script Properties:
  * - GEMINI_API_KEY: 필수
- * - GEMINI_MODEL: 선택, 기본값 gemini-1.5-flash
+ * - GEMINI_MODEL: 선택, 기본값 gemini-2.5-flash
  */
 
-const DEFAULT_GEMINI_MODEL = "gemini-1.5-flash";
+const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const CACHE_TTL_SECONDS = 21600;
 
 function doPost(e) {
@@ -218,6 +218,21 @@ function buildFortunePrompt(context) {
   promptLines.push("현실적인 해결책과 행동 지침을 포함한다.");
   promptLines.push("상담 문장은 따뜻하지만 지나치게 미신적으로 쓰지 않는다.");
   promptLines.push("사용자가 실제 명리학자에게 상담받는 느낌을 받도록 구체적으로 작성한다.");
+  promptLines.push("모든 사용자에게 비슷하게 보이는 일반 운세 문구를 반복하지 않는다.");
+  promptLines.push("이름, 성별, 양력/음력, 생년월일, 태어난 시간, 년주, 월주, 일주, 시주를 문장에 자연스럽게 반영한다.");
+  promptLines.push("오행 비율에서 가장 강한 오행과 가장 약한 오행을 반드시 분석의 중심축으로 사용한다.");
+  promptLines.push("십성, 음양, 지장간, 용신, 희신, 대운, 세운이 있으면 각 항목의 근거로 활용한다.");
+  promptLines.push("올해운은 사주 JSON의 yearFortune.year와 yearFortune.pillar를 기준으로 구체적으로 작성한다.");
+  promptLines.push("직업운, 재물운, 대인관계, 건강운, 애정운은 서로 다른 관점과 행동 조언을 담아 작성한다.");
+  promptLines.push("좋은 행동은 정확히 3가지 이상, 주의할 행동은 정확히 3가지 이상 포함한다.");
+  promptLines.push("사용자의 사주 데이터에 없는 사건, 질병, 결혼 시기, 수익 규모를 만들어내지 않는다.");
+  promptLines.push("일반 운세처럼 '좋은 일이 생깁니다' 수준으로 쓰지 말고, 년주·월주·일주·오행·세운 중 어떤 근거로 해석했는지 짧게 드러낸다.");
+  promptLines.push("예: '월지와 세운의 흐름상 직업 변화의 기운이 강하게 들어오는 시기입니다'처럼 사주 구조가 문장 안에 보여야 한다.");
+  if (saju.hourUnknown) {
+    promptLines.push("중요: 태어난 시간이 확인되지 않아 시주를 제외한 년주, 월주, 일주를 중심으로 분석한다.");
+    promptLines.push("시주를 임의로 만들거나 추정하지 않는다.");
+    promptLines.push("결과 초반에 '태어난 시간이 확인되지 않아 시주를 제외한 년주, 월주, 일주를 중심으로 분석했습니다. 따라서 일부 세부 운세는 실제 시주에 따라 달라질 수 있습니다.'라는 취지의 안내를 작게 반영한다.");
+  }
   promptLines.push("전체 분량은 한국어 기준 2200자에서 3200자 사이를 목표로 한다.");
   promptLines.push("각 섹션은 2문장 이상 작성한다.");
   promptLines.push("점수는 0에서 100 사이 정수로 작성한다.");
@@ -308,6 +323,20 @@ function addCounselingPrinciples(lines) {
     "상담 원칙 038: '가능성이 있습니다', '흐름으로 보입니다' 같은 신중한 표현을 사용한다.",
     "상담 원칙 039: 종교적 단정이나 초자연적 확언을 피한다.",
     "상담 원칙 040: 플랫폼 신뢰도를 위해 차분하고 전문적인 어휘를 사용한다.",
+    "상담 원칙 041: summary에는 일주, 올해 세운, 가장 강한 운 중 최소 두 가지를 반영한다.",
+    "상담 원칙 042: personality에는 일주와 오행 강약을 반드시 언급한다.",
+    "상담 원칙 043: yearFortune에는 현재 연도와 세운 기둥을 반드시 언급한다.",
+    "상담 원칙 044: money, career, love, health, relationship은 같은 문장 구조를 반복하지 않는다.",
+    "상담 원칙 045: 좋은 행동과 주의사항은 추상어보다 실제 행동으로 쓴다.",
+    "상담 원칙 046: 태어난 시간이 미상일 경우 시주 관련 해석을 보수적으로 쓴다.",
+    "상담 원칙 047: 성별 선택값은 고정 관념이 아니라 상담 톤과 관계 해석의 맥락으로만 사용한다.",
+    "상담 원칙 048: luckyItems는 부족한 오행이나 올해 강한 운과 연결된 추천 이유를 포함한다.",
+    "상담 원칙 049: 점수는 사주 구조와 섹션 내용이 서로 납득되도록 차이를 둔다.",
+    "상담 원칙 050: 이전 예시 문구를 그대로 베끼지 말고 입력 데이터에 맞게 새로 쓴다.",
+    "상담 원칙 051: hourUnknown이 true이면 시주, 후반 흐름, 자녀운, 말년 세부 해석을 단정하지 않는다.",
+    "상담 원칙 052: hourUnknown이 true여도 성격, 오행, 종합운, 직업운, 재물운, 애정운, 건강운, 올해운은 정상 분석한다.",
+    "상담 원칙 053: 각 주요 운세는 최소 하나 이상의 계산 근거를 짧게 포함한다.",
+    "상담 원칙 054: 결과가 이름만 바뀐 것처럼 보이지 않도록 오행 비율과 기둥 조합을 구체적으로 반영한다.",
   ];
 
   Array.prototype.push.apply(lines, principles);
@@ -415,7 +444,7 @@ function chooseModel(requestedModel) {
     PropertiesService.getScriptProperties().getProperty("GEMINI_MODEL") ||
     DEFAULT_GEMINI_MODEL;
   const model = requestedModel || propertyModel;
-  const allowed = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
+  const allowed = ["gemini-2.5-flash"];
 
   return allowed.indexOf(model) >= 0 ? model : DEFAULT_GEMINI_MODEL;
 }
