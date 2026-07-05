@@ -87,12 +87,7 @@
     setText("#starRating", createStars(analysis.totalScore));
     setText("#summary", analysis.summary);
     setText("#summaryEcho", analysis.summary);
-    setText(
-      "#analysisMode",
-      analysis.meta?.mode === "mock"
-        ? "Mock Mode"
-        : `API Mode · ${analysis.meta?.model || window.AppConfig.getRuntimeConfig().DEFAULT_MODEL}`,
-    );
+    hideAnalysisMode();
 
     renderScores(analysis.scores);
     renderPillars(saju);
@@ -117,6 +112,15 @@
     qs("#result").classList.remove("hidden");
     window.ResultReveal.reveal(session);
     qs("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function hideAnalysisMode() {
+    const mode = qs("#analysisMode");
+    if (!mode) return;
+
+    mode.textContent = "";
+    mode.classList.add("hidden");
+    mode.setAttribute("aria-hidden", "true");
   }
 
   function renderScores(scores) {

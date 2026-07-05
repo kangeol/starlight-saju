@@ -286,27 +286,12 @@
 
     console.error("AI SAJU DEBUG ERROR", debugPayload);
 
-    const messageParts = [
-      "[DEBUG] " + (debugPayload.message || "Unknown error"),
-      "geminiStatus: " + (debugPayload.geminiStatus || "null"),
-    ];
-
-    if (debugPayload.geminiResponse) {
-      messageParts.push("geminiResponse: " + debugPayload.geminiResponse);
-    }
-
-    if (debugPayload.responseText) {
-      messageParts.push("responseText: " + String(debugPayload.responseText).slice(0, 500));
-    }
-
-    if (debugPayload.detail) {
-      messageParts.push("detail: " + JSON.stringify(debugPayload.detail).slice(0, 500));
-    }
-
-    const error = new Error(messageParts.join("\n"));
+    const status = Number(debugPayload.geminiStatus || 0);
+    const retryable = RETRYABLE_STATUS_CODES.includes(status);
+    const error = new Error(retryable ? FINAL_BUSY_MESSAGE : API_ERROR_MESSAGE);
     error.debug = debugPayload;
-    error.status = Number(debugPayload.geminiStatus || 0);
-    error.retryable = RETRYABLE_STATUS_CODES.includes(error.status);
+    error.status = status;
+    error.retryable = retryable;
     return error;
   }
 
