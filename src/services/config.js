@@ -11,7 +11,7 @@
   const defaultConfig = {
     APPS_SCRIPT_URL: CURRENT_APPS_SCRIPT_URL,
     USE_MOCK_WHEN_API_EMPTY: false,
-    API_TIMEOUT_MS: 30000,
+    API_TIMEOUT_MS: 10000,
     STORAGE_PREFIX: "aiSajuV4",
     RECENT_LIMIT: 10,
     ENABLE_AI_CHAT: false,
